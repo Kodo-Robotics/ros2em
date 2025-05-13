@@ -104,4 +104,4 @@ We welcome contributions, ideas, and feedback.
 
 ## 📄 License
 
-[MIT License](LICENSE) — © 2024 Kodo Robotics
+[MIT License](LICENSE) — © 2025 Kodo Robotics
