@@ -1,7 +1,4 @@
-<p align="left">
-  <img src="https://raw.githubusercontent.com/Kodo-Robotics/.github/refs/heads/main/assets/logo.png" alt="ros2em logo" height="64" style="vertical-align: middle; margin-right: 10px;">
-  <span style="font-size: 2rem; font-weight: bold;">ros2em - ROS2 Environment Manager</span>
-</p>
+# ros2em - ROS2 Environment Manager
 
 [![PyPI version](https://img.shields.io/pypi/v/ros2em.svg)](https://pypi.org/project/ros2em/)
 [![Python](https://img.shields.io/pypi/pyversions/ros2em.svg)](https://pypi.org/project/ros2em/)
