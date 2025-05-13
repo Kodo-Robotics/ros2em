@@ -1,6 +1,6 @@
 [project]
 name = "ros2em"
-version = "0.1.0"
+version = "0.1.1"
 description = "ROS2 Environment Manager using Virtualbox and Vagrant"
 readme = "README.md"
 license = { file = "LICENSE" }
