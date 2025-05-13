@@ -1,0 +1,14 @@
+[project]
+name = "ros2em"
+version = "0.1.0"
+description = "ROS2 Environment Manager using Virtualbox and Vagrant"
+authors = [{ name = "Kodo Robotics", email = "kodorobotics@gmail.com" }]
+dependencies = [
+    "typer[all]", 
+    "rich",
+    "gdown",
+    "click==8.1.7"]
+requires-python = ">=3.7"
+
+[project.scripts]
+ros2em = "ros2em.cli:app"
