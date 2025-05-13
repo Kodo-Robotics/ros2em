@@ -42,15 +42,19 @@ def install_virtualbox():
 
 def install_vagrant():
     system = platform.system()
+    arch = platform.machine()
 
     if system == "Windows":
-        url = "https://releases.hashicorp.com/vagrant/2.4.1/vagrant_2.4.1_x86_64.msi"
+        url = "https://releases.hashicorp.com/vagrant/2.4.1/vagrant_2.4.1_windows_amd64.msi"
         path = download_file(url, "vagrant.msi")
         print("[yellow]Launching Vagrant installer...[/yellow]")
         subprocess.run(["msiexec", "/i", path])
     
     elif system == "Darwin":
-        url = "https://releases.hashicorp.com/vagrant/2.4.1/vagrant_2.4.1_x86_64.dmg"
+        if arch == "arm64":
+            url = "https://releases.hashicorp.com/vagrant/2.4.1/vagrant_2.4.1_darwin_arm64.dmg"
+        else:
+            url = "https://releases.hashicorp.com/vagrant/2.4.1/vagrant_2.4.1_darwin_amd64.dmg"
         path = download_file(url, "vagrant.dmg")
         print(f"[yellow]Please open the .dmg file and install manually: {path}[/yellow]")
         subprocess.run(["open", path])
