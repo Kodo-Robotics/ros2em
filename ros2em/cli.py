@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Kodo Robotics
+#
+# SPDX-License-Identifier: MIT
+
 import typer
 from ros2em.core import env_manager, installer, box_downloader
 from rich import print

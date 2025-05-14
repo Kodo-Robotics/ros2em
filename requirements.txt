@@ -1,6 +1,10 @@
+attrs==25.3.0
 beautifulsoup4==4.13.4
+binaryornot==0.4.4
+boolean.py==5.0
 build==1.2.2.post1
 certifi==2025.4.26
+chardet==5.2.0
 charset-normalizer==3.4.2
 click==8.1.7
 docutils==0.21.2
@@ -11,8 +15,11 @@ idna==3.10
 jaraco.classes==3.4.0
 jaraco.context==6.0.1
 jaraco.functools==4.1.0
+Jinja2==3.1.6
 keyring==25.6.0
+license-expression==30.4.1
 markdown-it-py==3.0.0
+MarkupSafe==3.0.2
 mdurl==0.1.2
 more-itertools==10.7.0
 nh3==0.2.21
@@ -20,14 +27,17 @@ packaging==25.0
 Pygments==2.19.1
 pyproject_hooks==1.2.0
 PySocks==1.7.1
+python-debian==1.0.1
 readme_renderer==44.0
 requests==2.32.3
 requests-toolbelt==1.0.0
+reuse==5.0.2
 rfc3986==2.0.0
 rich==14.0.0
--e git+https://github.com/Kodo-Robotics/ros2em.git@5b87938d3b357275143c732d414b659ac9877e8e#egg=ros2em
+-e git+https://github.com/Kodo-Robotics/ros2em.git@8652a1589bfcbc8efbdc821db2d8837bcd786779#egg=ros2em
 shellingham==1.5.4
 soupsieve==2.7
+tomlkit==0.13.2
 tqdm==4.67.1
 twine==6.1.0
 typer==0.15.3

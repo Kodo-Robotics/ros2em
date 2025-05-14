@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Kodo Robotics
+#
+# SPDX-License-Identifier: MIT
+
 def generate_vagrantfile(env_path, name, host_ports, cpu, ram):
     content = f"""
 Vagrant.configure("2") do |config|
