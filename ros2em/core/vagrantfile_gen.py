@@ -6,6 +6,7 @@ Vagrant.configure("2") do |config|
         vm.vm.hostname = "{name}"
 
         vm.vm.network "forwarded_port", guest: 6080, host: {host_ports['vnc']}, host_ip: "127.0.0.1"
+        vm.vm.boot_timeout = 600
         
         vm.vm.provider "virtualbox" do |vb|
             vb.name = "{name}"

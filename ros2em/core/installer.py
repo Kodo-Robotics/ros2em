@@ -4,17 +4,42 @@ import subprocess
 import urllib.request
 import tempfile
 import os
+from tqdm import tqdm
+from pathlib import Path
 from rich import print
 import typer
 
 def is_installed(cmd):
-    return shutil.which(cmd) is not None
+    # Try path first
+    if shutil.which(cmd):
+        return True
+    
+    # Windows specific fallback for VirtualBox
+    if platform.system() == "Windows" and cmd.lower() == "vboxmanage":
+        default_path = Path("C:/Program Files/Oracle/VirtualBox/VBoxManage.exe")
+        return default_path.exists()
+
+    return False
 
 def download_file(url, filename):
     tmp_dir = tempfile.gettempdir()
     path = os.path.join(tmp_dir, filename)
     print(f"[blue]Downloading {filename}...[/blue]")
-    urllib.request.urlretrieve(url, path)
+
+    response = urllib.request.urlopen(url)
+    total_size = int(response.getheader('Content-Length').strip())
+    block_size = 1024 * 32 
+
+    with open(path, 'wb') as f, tqdm(
+        total = total_size, unit = 'B', unit_scale = True, desc = os.path.basename(path)
+    ) as pbar:
+        while True:
+            buffer = response.read(block_size)
+            if not buffer:
+                break
+            f.write(buffer)
+            pbar.update(len(buffer))
+
     print(f"[green]Downloaded to {path}[/green]")
     return path
 

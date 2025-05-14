@@ -1,7 +1,6 @@
 # ros2em - ROS2 Environment Manager
 
 [![PyPI version](https://img.shields.io/pypi/v/ros2em.svg)](https://pypi.org/project/ros2em/)
-[![Python](https://img.shields.io/pypi/pyversions/ros2em.svg)](https://pypi.org/project/ros2em/)
 [![License](https://img.shields.io/github/license/Kodo-Robotics/ros2em.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macos%20%7C%20windows-blue)](#)
 

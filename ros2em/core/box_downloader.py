@@ -10,7 +10,7 @@ BOX_DIR = ROS2EM_HOME / "boxes"
 
 BOXES = {
     "ros2-humble": {
-        "amd64": "AMD64_FILE_ID",
+        "amd64": "1jnvDkELTvB8j5azmaAQNRagf9WPDtIZr",
         "arm64": "1yP6OsV9DLgnG4Qs1H632AxcGOpE-G0Qz"
     }
 }

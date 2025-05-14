@@ -9,6 +9,7 @@ dependencies = [
     "typer[all]", 
     "rich",
     "gdown",
+    "tqdm",
     "click==8.1.7"]
 requires-python = ">=3.7"
 
