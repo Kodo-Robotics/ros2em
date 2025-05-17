@@ -53,13 +53,13 @@ def install_virtualbox():
     print("[blue]Installing VirtualBox...[/blue]")
 
     if system == "Windows":
-        url = "https://download.virtualbox.org/virtualbox/7.0.18/VirtualBox-7.0.18-162988-Win.exe"
+        url = "https://download.virtualbox.org/virtualbox/7.1.4/VirtualBox-7.1.4-165100-Win.exe"
         path = download_file(url, "virtualbox.exe")
         print("[yellow]Launching VirtualBox installer...[/yellow]")
         subprocess.run([path])
     
     elif system == "Darwin":
-        url = "https://download.virtualbox.org/virtualbox/7.0.18/VirtualBox-7.0.18-162988-OSX.dmg"
+        url = "https://download.virtualbox.org/virtualbox/7.1.4/VirtualBox-7.1.4-165100-OSX.dmg"
         path = download_file(url, "virtualbox.dmg")
         print(f"[yellow]Please open the .dmg file and install manually: {path}[/yellow]")
         subprocess.run(["open", path])
@@ -74,16 +74,16 @@ def install_vagrant():
     arch = platform.machine()
 
     if system == "Windows":
-        url = "https://releases.hashicorp.com/vagrant/2.4.1/vagrant_2.4.1_windows_amd64.msi"
+        url = "https://releases.hashicorp.com/vagrant/2.4.5/vagrant_2.4.5_windows_amd64.msi"
         path = download_file(url, "vagrant.msi")
         print("[yellow]Launching Vagrant installer...[/yellow]")
         subprocess.run(["msiexec", "/i", path])
     
     elif system == "Darwin":
         if arch == "arm64":
-            url = "https://releases.hashicorp.com/vagrant/2.4.1/vagrant_2.4.1_darwin_arm64.dmg"
+            url = "https://releases.hashicorp.com/vagrant/2.4.5/vagrant_2.4.5_darwin_arm64.dmg"
         else:
-            url = "https://releases.hashicorp.com/vagrant/2.4.1/vagrant_2.4.1_darwin_amd64.dmg"
+            url = "https://releases.hashicorp.com/vagrant/2.4.5/vagrant_2.4.5_darwin_amd64.dmg"
         path = download_file(url, "vagrant.dmg")
         print(f"[yellow]Please open the .dmg file and install manually: {path}[/yellow]")
         subprocess.run(["open", path])
