@@ -15,7 +15,7 @@ from ros2em.utils.port_utils import find_free_port
 
 ROS2EM_HOME = Path.home() / ".ros2em"
 
-def create_environment(name: str, cpu: int = 2, ram: int = 2048):
+def create_environment(name: str, cpu: int = 2, ram: int = 2048, distro: str = "humble"):
     env_path = ROS2EM_HOME / name
     if env_path.exists():
         print(f"[red]Environment '{name}' already exists.[/red]")
@@ -28,11 +28,12 @@ def create_environment(name: str, cpu: int = 2, ram: int = 2048):
     host_ports = {"vnc": find_free_port(6080, 6100)}
     config = {
         "host_ports": host_ports,
+        "distro": distro,
         "resources": {"cpu": cpu, "ram": ram}
     }
 
     write_config(env_path, config)
-    generate_vagrantfile(env_path, name, host_ports, cpu, ram)
+    generate_vagrantfile(env_path, name, host_ports, cpu, ram, distro)
 
     # Start the VM
     try:
@@ -75,6 +76,7 @@ def list_environments():
     table.add_column("Status", justify="center")
     table.add_column("CPU", justify="center")
     table.add_column("RAM (MB)", justify="center")
+    table.add_column("Distro", justify="center")
     table.add_column("Open in Browser", justify="left")
 
     lines = result.stdout.strip().splitlines()
@@ -105,6 +107,7 @@ def list_environments():
         resources = config.get("resources", {})
 
         vnc_port = config.get("host_ports", {}).get("vnc")
+        distro = config.get("distro", {})
         cpu = str(resources.get("cpu", "-"))
         ram = str(resources.get("ram", "-"))
 
@@ -121,7 +124,7 @@ def list_environments():
         else:
             status_display = Text(state)
 
-        table.add_row(vm_folder, status_display, cpu, ram, vnc_url)
+        table.add_row(vm_folder, status_display, cpu, ram, distro, vnc_url)
 
     print(table)
 

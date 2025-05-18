@@ -22,10 +22,11 @@ def download_box():
 def create(
     name: str,
     cpu: int = typer.Option(2, help="Number of CPU cores"),
-    ram: int = typer.Option(2048, help="RAM in MB")
+    ram: int = typer.Option(2048, help="RAM in MB"),
+    distro: str = typer.Option("humble", help="ROS2 Distribution")
 ):
     """Create new ROS2 VM environment."""
-    env_manager.create_environment(name, cpu, ram)
+    env_manager.create_environment(name, cpu, ram, distro)
 
 @app.command()
 def open(name: str):

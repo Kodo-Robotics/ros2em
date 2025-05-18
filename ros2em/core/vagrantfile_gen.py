@@ -2,11 +2,11 @@
 #
 # SPDX-License-Identifier: MIT
 
-def generate_vagrantfile(env_path, name, host_ports, cpu, ram):
+def generate_vagrantfile(env_path, name, host_ports, cpu, ram, distro):
     content = f"""
 Vagrant.configure("2") do |config|
     config.vm.define "{name}" do |vm|
-        vm.vm.box = "ros2em/ros2-humble"
+        vm.vm.box = "ros2em/ros2-{distro}"
         vm.vm.hostname = "{name}"
 
         vm.vm.network "public_network"
