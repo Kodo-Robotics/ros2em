@@ -11,3 +11,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+import subprocess
+from rich import print
+from ros2em.core.compose_utils import env_path, compose_file, get_docker_command
+
+def stop_env(name: str):
+    env_dir = env_path(name)
+    compose_path = compose_file(name)
+
+    if not compose_path.exists():
+        print(f"[red]No such environment: {name}[/red]")
+        return
+    
+    docker_cmd = get_docker_command().split()
+    subprocess.run(docker_cmd + ["compose", "-f", str(compose_path), "down"], cwd = env_dir)
