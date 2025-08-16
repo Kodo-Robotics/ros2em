@@ -1,0 +1,46 @@
+# Copyright (c) 2025 Kodo Robotics
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import socket
+
+def find_open_vnc_port() -> int:
+    primary_port = 6080
+    if not _is_port_available(primary_port):
+        primary_port = _find_available_port()
+    return primary_port
+
+def validate_port_mapping(port_mapping: list[str]):
+    if (port_mapping):
+        for mapping in port_mapping:
+            try:
+                host, _ = mapping.split(":")
+                host = int(host)
+                if not _is_port_available(host):
+                    raise RuntimeError(f"Port {host} is already in use.")
+            except ValueError:
+                raise ValueError(f"Invalid port mapping format: {mapping}. Use host:container.")
+
+def _is_port_available(port: int) -> bool:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        try:
+            s.bind(("0.0.0.0", port))
+            return True
+        except OSError:
+            return False
+
+def _find_available_port(start: int = 6080, end: int = 6100) -> int:
+    for port in range(start, end):
+        if _is_port_available(port):
+            return port
+    raise RuntimeError("No available ports found in the range.")

@@ -14,7 +14,7 @@
 
 import subprocess
 from rich import print
-from ros2em.core.compose_utils import env_path, compose_file, get_docker_command
+from ros2em.core.utils.compose_utils import env_path, compose_file, get_docker_command
 
 def stop_env(name: str):
     env_dir = env_path(name)

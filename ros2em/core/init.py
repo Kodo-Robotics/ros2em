@@ -14,9 +14,10 @@
 
 import os
 from rich import print
-from ros2em.core.compose_utils import env_path, compose_file, generate_compose_content
+from ros2em.core.utils.compose_utils import env_path, compose_file, generate_compose_content
+from ros2em.core.utils.network_utils import find_open_vnc_port, validate_port_mapping
 
-def init_env(name: str, distro: str):
+def init_env(name: str, distro: str, additional_ports: list[str] = None):
     env_dir = env_path(name)
     compose_path = compose_file(name)
 
@@ -26,9 +27,16 @@ def init_env(name: str, distro: str):
     
     os.makedirs(env_dir, exist_ok = True)
 
-    content = generate_compose_content(name, distro)
+    # Port mappings
+    vnc_port = find_open_vnc_port()
+    validate_port_mapping(additional_ports)
+    port_mappings = [f"{vnc_port}:80"] + additional_ports
+
+    content = generate_compose_content(name, distro, port_mappings)
     with open(compose_path, "w") as f:
         f.write(content)
 
     print(f"[green]Environment '{name}' created with ROS 2 distro: {distro}[/green]")
     print(f"[blue]To start it, run:[/blue] ros2em up {name}")
+    if additional_ports:
+        print(f"[blue]Additional port mappings:[/blue] {', '.join(additional_ports)}")
