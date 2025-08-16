@@ -37,6 +37,11 @@ def stop(name: str = typer.Argument(..., help="Name of the environment")):
     manager.stop_env(name)
 
 @app.command()
+def delete(name: str = typer.Argument(..., help="Name of the environment")):
+    """Delete the environment."""
+    manager.delete_env(name)
+
+@app.command()
 def open(name: str):
     """Open the VNC viewer for the environment."""
     manager.open_vnc(name)

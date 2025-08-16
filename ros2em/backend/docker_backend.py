@@ -41,7 +41,10 @@ def up(name: str, path: Path, metadata: dict):
             print(f"[green]Environment {name} is already running.[/green]")
         else:
             print(f"[yellow]Starting existing environment {name}...[/yellow]")
-            subprocess.run(["docker", "--context", context, "start", name])
+            subprocess.run(
+                ["docker", "--context", context, "compose", "-f", str(compose_path), "start"],
+                cwd = path
+            )
     else:
         print(f"[blue]Creating and starting new environment...[/blue]")
         subprocess.run(
@@ -59,7 +62,7 @@ def stop(name: str, path: Path, metadata: dict):
     if _container_exists(name):
         if _container_running(name):
             subprocess.run(
-                ["docker", "--context", context, "stop", name], 
+                ["docker", "--context", context, "compose", "-f", str(compose_path), "stop"], 
                 cwd = path
             )
             print(f"[green]Environment {name} stopped.[/green]")
@@ -67,6 +70,22 @@ def stop(name: str, path: Path, metadata: dict):
             print(f"[yellow]Environment {name} is already stopped.[/yellow]")
     else:
         print(f"[red]Container {name} does not exist.[/red]")
+
+def delete(name: str, path: Path, metadata: dict):
+    compose_path = compose_file(name)
+    if not compose_path.exists():
+        print(f"[red]No such environment: {name}[/red]")
+        return
+    
+    context = metadata.get("context", "default")
+    if _container_exists(name):
+        print(f"[yellow]Removing environment {name}...[/yellow]")
+        subprocess.run(
+                ["docker", "--context", context, "compose", "-f", str(compose_path), "down"], 
+                cwd = path
+        )
+    else:
+        print(f"[gray]No container {name} found.[/gray]")
 
 def exec(name: str, cmd: list[str], capture: bool = False) -> str | None:
     result = subprocess.run(["docker", "exec", name] + cmd,
