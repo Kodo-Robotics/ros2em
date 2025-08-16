@@ -23,18 +23,23 @@ def init(name: str = typer.Argument(..., help="Name of the environment"),
          ports: list[str] = typer.Option(None, "--ports", help="Extra port mappings (host:container)"),
          context: str = typer.Option("default", "--context", help="Docker context to use")
         ):
-    """Create a new ROS2 environment"""
+    """Create a new ROS2 environment."""
     manager.init_env(name, distro, ports, context)
 
 @app.command()
 def up(name: str = typer.Argument(..., help="Name of the environment")):
-    """Start or activate the environment"""
+    """Start or activate the environment."""
     manager.up_env(name)
 
 @app.command()
 def stop(name: str = typer.Argument(..., help="Name of the environment")):
     """Stop or deactivate the environment."""
     manager.stop_env(name)
+
+@app.command()
+def open(name: str):
+    """Open the VNC viewer for the environment."""
+    manager.open_vnc(name)
 
 if __name__ == "__main__":
     app()

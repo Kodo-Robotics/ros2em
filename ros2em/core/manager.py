@@ -15,3 +15,4 @@
 from ros2em.core.init import init_env
 from ros2em.core.up import up_env
 from ros2em.core.stop import stop_env
+from ros2em.core.open import open_vnc

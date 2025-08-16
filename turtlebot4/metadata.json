@@ -2,9 +2,7 @@
   "name": "turtlebot4",
   "distro": "rolling",
   "vnc_port": 6080,
-  "extra_ports": [
-    "1905:1905"
-  ],
+  "extra_ports": null,
   "context": "default",
-  "created_at": "2025-08-16T10:39:36.392393"
+  "created_at": "2025-08-16T11:53:33.796421"
 }

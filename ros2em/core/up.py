@@ -31,7 +31,9 @@ def up_env(name: str):
     extra_ports = metadata.get("extra_ports", [])
     vnc_port = metadata.get("vnc_port", 6080)
     
-    all_host_ports = [vnc_port] + [int(p.split(":")[0]) for p in extra_ports]
+    all_host_ports = [vnc_port]
+    if extra_ports:
+        all_host_ports += [int(p.split(":")[0]) for p in extra_ports]
     if not validate_ports_available(all_host_ports):
         return
 

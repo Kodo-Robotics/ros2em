@@ -25,8 +25,6 @@ def prepare_ports() -> Tuple[int, list[str]]:
 def generate_compose_content(name: str, distro: str, port_mappings: list[str]) -> str:
     ports_yaml = "\n".join([f"      - \"{mapping}\"" for mapping in port_mappings])
     return f"""
-version: '3.8'
-
 services:
   ros2:
     image: tiryoh/ros2-desktop-vnc:{distro}
