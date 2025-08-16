@@ -14,33 +14,27 @@
 
 import os
 from rich import print
-from ros2em.core.docker_builder import prepare_ports, generate_compose_content
-from ros2em.utils.compose_utils import env_path, compose_file
-from ros2em.utils.file_utils import write_compose_file, write_metadata
+
+from ros2em.backend import docker_backend
+from ros2em.utils.network_utils import prepare_ports
+from ros2em.utils.env_utils import env_path, read_metadata, write_metadata
 
 def init_env(name: str, distro: str, additional_ports: list[str] = None, context: str = "default"):
     env_dir = env_path(name)
-    compose_path = compose_file(name)
-
-    if compose_path.exists():
-        print(f"[yellow]Environment '{name}' already exists.[/yellow]")
-        return
-    
     os.makedirs(env_dir, exist_ok = True)
 
     # Port mappings
     primary_port = prepare_ports()
     all_port_mappings = [f"{primary_port}:80"] + (additional_ports or [])
-    compose = generate_compose_content(name, distro, all_port_mappings)
-
-    write_compose_file(compose_path, compose)
     write_metadata(env_dir, {
         "name": name,
         "distro": distro,
-        "vnc_port": primary_port,
-        "extra_ports": additional_ports,
+        "port_mappings": all_port_mappings,
         "context": context
-    })    
+    })
+
+    metadata = read_metadata(env_dir)
+    docker_backend.init(name, env_dir, metadata)    
 
     print(f"[green]Environment '{name}' created with ROS 2 distro: {distro}[/green]")
     print(f"[blue]To start it, run:[/blue] ros2em up {name}")

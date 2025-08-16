@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import socket
-from typing import List
+from typing import List, Tuple
 from rich import print
 
 def is_port_available(port: int) -> bool:
@@ -36,3 +36,13 @@ def validate_ports_available(ports: List[int]) -> bool:
             print(f"[red]Port {port} is already in use. Cannot proceed.[/red]")
             return False
     return True
+
+def prepare_ports() -> Tuple[int, list[str]]:
+    primary_port = 6080
+    if not is_port_available(primary_port):
+        primary_port = find_available_port(start = 6081)
+    return primary_port
+
+def get_vnc_port(ports: List[str]) -> int:
+    vnc_port = int(ports[0].split(":")[0])
+    return vnc_port

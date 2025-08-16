@@ -11,22 +11,3 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-from pathlib import Path
-import platform
-
-BASE_DIR = Path.cwd()
-DOCKER_IMAGE = "tiryoh/ros2-desktop-vnc"
-
-def env_path(name: str) -> Path:
-    return BASE_DIR / name
-
-def compose_file(name: str) -> Path:
-    return env_path(name) / "docker-compose.yml"
-
-def get_docker_command() -> str:
-    system = platform.system()
-    if system == "Windows":
-        return "wsl docker"
-    else:
-        return "docker"

@@ -12,32 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import subprocess
-from rich import print
-from ros2em.utils.compose_utils import env_path, compose_file
-from ros2em.utils.file_utils import read_metadata
+from ros2em.utils.env_utils import env_path, read_metadata
 from ros2em.utils.network_utils import validate_ports_available
+from ros2em.backend import docker_backend
 
 def up_env(name: str):
     env_dir = env_path(name)
-    compose_path = compose_file(name)
-
-    if not compose_path.exists():
-        print(f"[red]No such environment: {name}[/red]")
-        return
-
     metadata = read_metadata(env_dir)
-    context = metadata.get("context", "default")
-    extra_ports = metadata.get("extra_ports", [])
-    vnc_port = metadata.get("vnc_port", 6080)
-    
-    all_host_ports = [vnc_port]
-    if extra_ports:
-        all_host_ports += [int(p.split(":")[0]) for p in extra_ports]
-    if not validate_ports_available(all_host_ports):
-        return
 
-    subprocess.run(
-        ["docker", "--context", context, "compose", "-f", str(compose_path), "up", "-d"], 
-        cwd = env_dir
-    )
+    port_mappings = metadata.get("port_mappings", [])
+    ports = [int(p.split(":")[0]) for p in port_mappings]
+    if not validate_ports_available(ports):
+        return
+    
+    docker_backend.up(name, env_dir, metadata)

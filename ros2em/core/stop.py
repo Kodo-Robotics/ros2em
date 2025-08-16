@@ -12,23 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import subprocess
 from rich import print
-from ros2em.utils.compose_utils import env_path, compose_file, get_docker_command
-from ros2em.utils.file_utils import read_metadata
+
+from ros2em.backend import docker_backend
+from ros2em.utils.env_utils import env_path, read_metadata
 
 def stop_env(name: str):
     env_dir = env_path(name)
-    compose_path = compose_file(name)
-
-    if not compose_path.exists():
-        print(f"[red]No such environment: {name}[/red]")
-        return
-    
     metadata = read_metadata(env_dir)
-    context = metadata.get("context", "default")
-    
-    subprocess.run(
-        ["docker", "--context", context, "compose", "-f", str(compose_path), "down"], 
-        cwd = env_dir
-    )
+    docker_backend.down(name, env_dir, metadata)

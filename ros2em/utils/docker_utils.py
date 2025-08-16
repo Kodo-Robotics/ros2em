@@ -12,26 +12,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-from datetime import datetime
+
 from pathlib import Path
+from typing import Tuple
+
+from ros2em.utils.env_utils import BASE_DIR, env_path
+
+DOCKER_IMAGE = "tiryoh/ros2-desktop-vnc"
+
+def compose_file(name: str) -> Path:
+    return env_path(name) / "docker-compose.yml"
 
 def write_compose_file(path: Path, content: str):
     with open(path, "w") as f:
         f.write(content)
 
-def write_metadata(path: Path, metadata: dict):
-    metadata["created_at"] = datetime.now().isoformat()
-    with open(path / "metadata.json", "w") as f:
-        json.dump(metadata, f, indent = 2)
-
-def read_metadata(env_path: Path) -> dict:
-    meta_file = env_path / "metadata.json"
-    if not meta_file.exists():
-        return {}
-    
-    with open(meta_file, "r") as f:
-        try:
-            return json.load(f)
-        except json.JSONDecodeError:
-            return {}
+def generate_compose_content(name: str, distro: str, port_mappings: list[str]) -> str:
+    ports_yaml = "\n".join([f"      - \"{mapping}\"" for mapping in port_mappings])
+    return f"""
+services:
+  ros2:
+    image: tiryoh/ros2-desktop-vnc:{distro}
+    container_name: {name}
+    volumes:
+      - {BASE_DIR}:/home/ubuntu/ros2_ws/src
+    ports:
+{ports_yaml}
+    shm_size: 512m
+    restart: unless-stopped
+    command: bash -c "tail -f /dev/null"
+""".strip()
