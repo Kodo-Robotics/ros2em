@@ -14,6 +14,7 @@
 
 import subprocess
 from pathlib import Path
+from rich import print
 
 from ros2em.utils.docker_utils import compose_file, write_compose_file, generate_compose_content
     
@@ -35,24 +36,53 @@ def up(name: str, path: Path, metadata: dict):
         return
     
     context = metadata.get("context", "default")
-    subprocess.run(
-        ["docker", "--context", context, "compose", "-f", str(compose_path), "up", "-d"], 
-        cwd = path
-    )
+    if _container_exists(name):
+        if _container_running(name):
+            print(f"[green]Environment {name} is already running.[/green]")
+        else:
+            print(f"[yellow]Starting existing environment {name}...[/yellow]")
+            subprocess.run(["docker", "--context", context, "start", name])
+    else:
+        print(f"[blue]Creating and starting new environment...[/blue]")
+        subprocess.run(
+            ["docker", "--context", context, "compose", "-f", str(compose_path), "up", "-d"], 
+            cwd = path
+        )
 
-def down(name: str, path: Path, metadata: dict):
+def stop(name: str, path: Path, metadata: dict):
     compose_path = compose_file(name)
     if not compose_path.exists():
         print(f"[red]No such environment: {name}[/red]")
         return
     
     context = metadata.get("context", "default")
-    subprocess.run(
-        ["docker", "--context", context, "compose", "-f", str(compose_path), "down"], 
-        cwd = path
-    )
+    if _container_exists(name):
+        if _container_running(name):
+            subprocess.run(
+                ["docker", "--context", context, "stop", name], 
+                cwd = path
+            )
+            print(f"[green]Environment {name} stopped.[/green]")
+        else:
+            print(f"[yellow]Environment {name} is already stopped.[/yellow]")
+    else:
+        print(f"[red]Container {name} does not exist.[/red]")
 
 def exec(name: str, cmd: list[str], capture: bool = False) -> str | None:
     result = subprocess.run(["docker", "exec", name] + cmd,
                             capture_output=capture, text=True)
     return result.stdout.strip() if capture and result.returncode == 0 else None
+
+def _container_exists(name: str) -> bool:
+    result = subprocess.run(
+        ["docker", "ps", "-a", "--format", "{{.Names}}"],
+        capture_output=True, text=True
+    )
+    return f"{name}" in result.stdout
+
+def _container_running(name: str) -> bool:
+    result = subprocess.run(
+        ["docker", "ps", "--format", "{{.Names}}"],
+        capture_output=True, text=True
+    )
+    return f"{name}" in result.stdout
