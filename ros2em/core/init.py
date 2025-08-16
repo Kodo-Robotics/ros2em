@@ -14,10 +14,11 @@
 
 import os
 from rich import print
-from ros2em.core.utils.compose_utils import env_path, compose_file, generate_compose_content
-from ros2em.core.utils.network_utils import find_open_vnc_port, validate_port_mapping
+from ros2em.core.docker_builder import prepare_ports, generate_compose_content
+from ros2em.utils.compose_utils import env_path, compose_file
+from ros2em.utils.file_utils import write_compose_file, write_metadata
 
-def init_env(name: str, distro: str, additional_ports: list[str] = None):
+def init_env(name: str, distro: str, additional_ports: list[str] = None, context: str = "default"):
     env_dir = env_path(name)
     compose_path = compose_file(name)
 
@@ -28,13 +29,18 @@ def init_env(name: str, distro: str, additional_ports: list[str] = None):
     os.makedirs(env_dir, exist_ok = True)
 
     # Port mappings
-    vnc_port = find_open_vnc_port()
-    validate_port_mapping(additional_ports)
-    port_mappings = [f"{vnc_port}:80"] + additional_ports
+    primary_port = prepare_ports()
+    all_port_mappings = [f"{primary_port}:80"] + (additional_ports or [])
+    compose = generate_compose_content(name, distro, all_port_mappings)
 
-    content = generate_compose_content(name, distro, port_mappings)
-    with open(compose_path, "w") as f:
-        f.write(content)
+    write_compose_file(compose_path, compose)
+    write_metadata(env_dir, {
+        "name": name,
+        "distro": distro,
+        "vnc_port": primary_port,
+        "extra_ports": additional_ports,
+        "context": context
+    })    
 
     print(f"[green]Environment '{name}' created with ROS 2 distro: {distro}[/green]")
     print(f"[blue]To start it, run:[/blue] ros2em up {name}")

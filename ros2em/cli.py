@@ -19,9 +19,12 @@ app = typer.Typer(help = "ros2em: ROS2 Environment Manager")
 
 @app.command()
 def init(name: str = typer.Argument(..., help="Name of the environment"),
-         distro: str = typer.Argument(..., help="ROS2 distro (e.g. humble, iron)")):
+         distro: str = typer.Argument(..., help="ROS2 distro (e.g. humble, iron)"),
+         ports: list[str] = typer.Option(None, "--ports", help="Extra port mappings (host:container)"),
+         context: str = typer.Option("default", "--context", help="Docker context to use")
+        ):
     """Create a new ROS2 environment"""
-    manager.init_env(name, distro)
+    manager.init_env(name, distro, ports, context)
 
 @app.command()
 def up(name: str = typer.Argument(..., help="Name of the environment")):

@@ -1,0 +1,10 @@
+{
+  "name": "turtlebot4",
+  "distro": "rolling",
+  "vnc_port": 6080,
+  "extra_ports": [
+    "1905:1905"
+  ],
+  "context": "default",
+  "created_at": "2025-08-16T10:39:36.392393"
+}

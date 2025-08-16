@@ -24,24 +24,6 @@ def env_path(name: str) -> Path:
 def compose_file(name: str) -> Path:
     return env_path(name) / "docker-compose.yml"
 
-def generate_compose_content(name: str, distro: str, port_mappings: list[str]) -> str:
-    ports_yaml = "\n".join([f'      - "{mapping}"' for mapping in port_mappings])
-    return f"""
-version: '3.8'
-
-services:
-    ros2:
-        image: tiryoh/ros2-desktop-vnc:{distro}
-        container_name: {name}
-        volumes:
-            - {BASE_DIR}:/home/ubuntu/ros2_ws/src
-        ports:
-{ports_yaml}
-        shm_size: 512m
-        restart: unless-stopped
-        command: bash -c "tail -f /dev/null"
-"""
-
 def get_docker_command() -> str:
     system = platform.system()
     if system == "Windows":

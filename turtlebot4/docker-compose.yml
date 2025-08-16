@@ -1,14 +1,14 @@
-
 version: '3.8'
 
 services:
-    ros2:
-        image: tiryoh/ros2-desktop-vnc:rolling
-        container_name: turtlebot4
-        volumes:
-            - /Users/sakshaymahna/Documents/Robotics/ROSDocker/ros2em:/home/ubuntu/ros2_ws/src
-        ports:
-            - "6080:80"
-        shm_size: 512m
-        restart: unless-stopped
-        command: bash -c "tail -f /dev/null"
+  ros2:
+    image: tiryoh/ros2-desktop-vnc:rolling
+    container_name: turtlebot4
+    volumes:
+      - /Users/sakshaymahna/Documents/Robotics/ROSDocker/ros2em:/home/ubuntu/ros2_ws/src
+    ports:
+      - "6080:80"
+      - "1905:1905"
+    shm_size: 512m
+    restart: unless-stopped
+    command: bash -c "tail -f /dev/null"

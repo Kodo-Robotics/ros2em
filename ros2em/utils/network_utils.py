@@ -13,25 +13,10 @@
 # limitations under the License.
 
 import socket
+from typing import List
+from rich import print
 
-def find_open_vnc_port() -> int:
-    primary_port = 6080
-    if not _is_port_available(primary_port):
-        primary_port = _find_available_port()
-    return primary_port
-
-def validate_port_mapping(port_mapping: list[str]):
-    if (port_mapping):
-        for mapping in port_mapping:
-            try:
-                host, _ = mapping.split(":")
-                host = int(host)
-                if not _is_port_available(host):
-                    raise RuntimeError(f"Port {host} is already in use.")
-            except ValueError:
-                raise ValueError(f"Invalid port mapping format: {mapping}. Use host:container.")
-
-def _is_port_available(port: int) -> bool:
+def is_port_available(port: int) -> bool:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         try:
             s.bind(("0.0.0.0", port))
@@ -39,8 +24,15 @@ def _is_port_available(port: int) -> bool:
         except OSError:
             return False
 
-def _find_available_port(start: int = 6080, end: int = 6100) -> int:
+def find_available_port(start: int = 6080, end: int = 6100) -> int:
     for port in range(start, end):
-        if _is_port_available(port):
+        if is_port_available(port):
             return port
     raise RuntimeError("No available ports found in the range.")
+
+def validate_ports_available(ports: List[int]) -> bool:
+    for port in ports:
+        if not is_port_available(port):
+            print(f"[red]Port {port} is already in use. Cannot proceed.[/red]")
+            return False
+    return True
