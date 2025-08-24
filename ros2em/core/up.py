@@ -11,3 +11,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+from ros2em.utils.env_utils import env_path, read_metadata
+from ros2em.utils.network_utils import validate_ports_available
+from ros2em.backend import docker_backend
+
+def up_env(name: str):
+    env_dir = env_path(name)
+    metadata = read_metadata(env_dir)
+
+    port_mappings = metadata.get("port_mappings", [])
+    ports = [int(p.split(":")[0]) for p in port_mappings]
+    if not validate_ports_available(ports):
+        return
+    
+    docker_backend.up(name, env_dir, metadata)

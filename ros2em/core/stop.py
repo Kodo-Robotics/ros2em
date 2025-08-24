@@ -11,3 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+from ros2em.backend import docker_backend
+from ros2em.utils.env_utils import env_path, read_metadata
+
+def stop_env(name: str):
+    env_dir = env_path(name)
+    metadata = read_metadata(env_dir)
+    docker_backend.stop(name, env_dir, metadata)
