@@ -4,24 +4,51 @@
 [![License](https://img.shields.io/github/license/Kodo-Robotics/ros2em.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macos%20%7C%20windows-blue)](#)
 
-**ros2em** is a CLI tool to create and manage isolated ROS2 environments using VirtualBox and Vagrant.
+**ros2em** is a CLI tool to create and manage isolated ROS2 environments.
 
 Whether you're a robotics developer, student, or researcher, `ros2em` makes it easy to:
 
-* 🧠 Launch ROS2 in clean, isolated virtual machines
+* 🧠 Spin up clean, persistent ROS 2 environments
+* 🐳 Use Docker based containers
 * 🖥 Access GUIs like Rviz or Gazebo via browser
 * ✅ Support both `amd64` and `arm64` architectures
-* 🧰 Handle setup: VirtualBox, Vagrant, and box file download
 
 ---
 
 ## 🚀 Features
 
-* ⚡ One-line setup for fully functional ROS 2 VMs
-* 📦 Architecture-specific box handling (`amd64`, `arm64`)
+* ⚡ One-line ROS 2 environment creation and access
+* 🖥 Web-based GUI using [tiryoh/ros2-desktop-vnc](https://hub.docker.com/r/tiryoh/ros2-desktop-vnc)
 * 🖥 GUI access using browser
 * 🔐 No system pollution – nothing touches your host machine
 * 💡 Powered by Typer (CLI) and Rich (colored output)
+
+---
+
+## 🔧 Prerequisites
+
+Before using ros2em, make sure you have Docker installed on your system:
+
+### 🪟 Windows
+1. Install Docker Desktop from https://www.docker.com/products/docker-desktop
+2. Ensure WSL 2 is installed and configured (Docker Desktop will guide you).
+3. After install, verify Docker is working `docker version`.
+
+### 🍎 macOS
+1. Install Docker Desktop from https://www.docker.com/products/docker-desktop
+2. After installation, open Docker Desktop once to initialize.
+3. After install, verify Docker is working `docker version`.
+
+### 🐧 Linux (Ubuntu/Debian)
+
+```bash
+sudo apt update
+sudo apt install -y docker.io docker-compose
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
+Then test it `docker version`.
 
 ---
 
@@ -43,51 +70,59 @@ pip install ros2em
 
 ## 🛠 Commands
 
-### 🔧 Setup dependencies
+### 🐣 Create a new environment
 
 ```bash
-ros2em init
+ros2em init myenv --distro humble
 ```
 
-Installs VirtualBox and Vagrant (if not found).
+Creates a `.ros2em/myenv/` folder with a default `docker-compose.yml`, metadata, and port configuration.
 
-### ⬇️ Download the correct ROS2 box
+#### ⚙️ Options
+You can customize it with advanced options.
+
+| Option     | Type       | Default    | Description                                                                 |
+|------------|------------|------------|-----------------------------------------------------------------------------|
+| `--ports`  | list[str]  | None       | Extra port mappings in `host:container` format (e.g., `9000:9000`)         |
+| `--context`| str        | "default"  | Docker context to use (useful for `remote` or `wsl` contexts)              |
+
+Example:
 
 ```bash
-ros2em download-box
+ros2em init turtlebot4 humble --ports 11311:11311 --context wsl
 ```
 
-Auto-detects your architecture and downloads the appropriate `.box` file.
-
-### 🐢 Create an environment
+### 🚀 Start or resume the container
 
 ```bash
-ros2em create myenv
+ros2em up myenv
 ```
 
-Creates `~/.ros2em/myenv` and spins up a VM.
+Starts the container if it exists, or creates it if not.
 
-### 📋 Manage environments
+### 🧹 Stop the container
 
 ```bash
-ros2em list        # List all environments
-ros2em start myenv # Start a VM
-ros2em stop myenv  # Stop a VM
-ros2em delete myenv # Delete an environment
+ros2em stop myenv
 ```
 
----
+Stops the running container but **retains it**, including all manually installed packages.
 
-## 📁 Environment Structure
+### ❌ Delete an environment
 
+```bash
+ros2em delete myenv
 ```
-~/.ros2em/
-├── boxes/
-│   └── arm64/ or amd64/
-│       └── ros2-humble.box
-├── myenv/
-│   └── Vagrantfile
+
+Stops and removes the container. As well deletes `.ros2em/myenv/` folder and all metadata.
+
+### 🖥 Accessing the Desktop GUI
+
+```bash
+ros2em open myenv
 ```
+
+Click on the link that looks something like this in the output: `http://localhost:6080`.
 
 ---
 
@@ -103,4 +138,4 @@ We welcome contributions, ideas, and feedback.
 
 ## 📄 License
 
-[MIT License](LICENSE) — © 2025 Kodo Robotics
+[Apache 2.0](LICENSE) — © 2025 Kodo Robotics
